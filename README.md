@@ -19,7 +19,7 @@ https://docs.google.com/spreadsheets/d/1OcpmU2rveF1s633NCvCy9BsZN--44lKocjqYSAx5
 Current deployed Apps Script URL already built into the frontend:
 
 ```text
-https://script.google.com/macros/s/AKfycbztJ2dYbu6WbGXTkMR_2eWG6pF08DfaMarxCbc6lciPJp94cCuR5l822IpFjnhkXJgM/exec
+https://script.google.com/macros/s/AKfycbzcViQ_NJstbPuLYMrPIyaYwwUlY-1bYzvcxsKq1Imb77CYUfpWVGjwuYwTXSsQp6Co/exec
 ```
 
 ## What changed
@@ -128,3 +128,12 @@ After updating Apps Script, click `Setup Sheet` inside the app once. This will a
 ## Logo added
 
 The frontend now includes the Blue Lily Properties logo in the top header using `frontend/logo.jpg`.
+
+## Commission split fix
+
+The agent sheet currently uses the column `Split with office` with values such as `80/20`, `75/25` and `70/30`.
+
+This build now reads that combined split correctly:
+- `80/20` becomes Agent Split 80% and Office Split 20%.
+- `75/25` becomes Agent Split 75% and Office Split 25%.
+- `70/30` becomes Agent Split 70% and Office Split 30%.

@@ -663,12 +663,88 @@ function listAgents_() {
 
   const agents = data.slice(1)
     .map(function (row) {
-      const name = getByKeys_(row, index, ['name', 'agent', 'fullname', 'agentname', 'agentfullname']);
-      const email = getByKeys_(row, index, ['email', 'emailaddress', 'mail']);
-      const number = getByKeys_(row, index, ['number', 'cell', 'cellnumber', 'phone', 'mobile', 'contactnumber']);
-      const ffc = getByKeys_(row, index, ['ffc', 'ffcnr', 'ffcnumber', 'ppra']);
-      let agentSplitPct = parseNumber_(getByKeys_(row, index, ['agentsplit', 'agentsplitpct', 'agentsplitpercent', 'commissionsplit', 'commissionsplitpct', 'split', 'splitpct']));
-      let officeSplitPct = parseNumber_(getByKeys_(row, index, ['officesplit', 'officesplitpct', 'officesplitpercent', 'companysplit', 'companysplitpct', 'mcsplit', 'marketsplit', 'marketcentresplit', 'kwsplit']));
+      const name = getByKeys_(row, index, [
+        'name',
+        'agent',
+        'fullname',
+        'agentname',
+        'agentfullname'
+      ]);
+
+      const email = getByKeys_(row, index, [
+        'email',
+        'emailaddress',
+        'mail'
+      ]);
+
+      const number = getByKeys_(row, index, [
+        'number',
+        'cell',
+        'cellnumber',
+        'phone',
+        'mobile',
+        'contactnumber'
+      ]);
+
+      const ffc = getByKeys_(row, index, [
+        'ffc',
+        'ffcnr',
+        'ffcnumber',
+        'ppra'
+      ]);
+
+      const combinedSplitRaw = getByKeys_(row, index, [
+        'splitwithoffice',
+        'splitwiththeoffice',
+        'agentsplitwithoffice',
+        'agentofficesplit',
+        'agentoffice',
+        'commissionwithoffice',
+        'commissionsplitwithoffice',
+        'commissionagentsplitwithoffice'
+      ]);
+
+      const combinedSplit = parseSplitWithOffice_(combinedSplitRaw);
+
+      let agentSplitPct = parseNumber_(
+        getByKeys_(row, index, [
+          'agentsplit',
+          'agentsplitpct',
+          'agentsplitpercent',
+          'agentcommission',
+          'agentcommissionpct',
+          'agentcommissionpercent',
+          'commissionagentsplit',
+          'commissionagentsplitpct'
+        ])
+      );
+
+      let officeSplitPct = parseNumber_(
+        getByKeys_(row, index, [
+          'officesplit',
+          'officesplitpct',
+          'officesplitpercent',
+          'companysplit',
+          'companysplitpct',
+          'companysplitpercent',
+          'mcsplit',
+          'mcsplitpct',
+          'marketsplit',
+          'marketsplitpct',
+          'marketcentresplit',
+          'marketcentresplitpct',
+          'kwsplit',
+          'kwsplitpct'
+        ])
+      );
+
+      if (!agentSplitPct && combinedSplit.agentSplitPct) {
+        agentSplitPct = combinedSplit.agentSplitPct;
+      }
+
+      if (!officeSplitPct && combinedSplit.officeSplitPct) {
+        officeSplitPct = combinedSplit.officeSplitPct;
+      }
 
       if (!officeSplitPct && agentSplitPct) {
         officeSplitPct = 100 - agentSplitPct;
@@ -689,7 +765,8 @@ function listAgents_() {
         number: clean_(number),
         ffc: clean_(ffc),
         agentSplitPct: round4_(agentSplitPct),
-        officeSplitPct: round4_(officeSplitPct)
+        officeSplitPct: round4_(officeSplitPct),
+        splitWithOffice: clean_(combinedSplitRaw)
       };
     })
     .filter(function (agent) {
@@ -702,6 +779,40 @@ function listAgents_() {
   return {
     success: true,
     agents: agents
+  };
+}
+
+function parseSplitWithOffice_(value) {
+  const text = clean_(value);
+
+  if (!text) {
+    return {
+      agentSplitPct: 0,
+      officeSplitPct: 0
+    };
+  }
+
+  const matches = text.match(/\d+(?:[.,]\d+)?/g) || [];
+
+  if (matches.length >= 2) {
+    return {
+      agentSplitPct: parseNumber_(matches[0]),
+      officeSplitPct: parseNumber_(matches[1])
+    };
+  }
+
+  if (matches.length === 1) {
+    const agentSplitPct = parseNumber_(matches[0]);
+
+    return {
+      agentSplitPct: agentSplitPct,
+      officeSplitPct: agentSplitPct ? 100 - agentSplitPct : 0
+    };
+  }
+
+  return {
+    agentSplitPct: 0,
+    officeSplitPct: 0
   };
 }
 
