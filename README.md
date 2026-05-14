@@ -147,3 +147,38 @@ When Agent 1, Agent 2 or Agent 3 is changed on the frontend, the app now immedia
 - Split with office display, such as 80/20, 75/25 or 70/30
 
 Opening an existing saved transaction keeps the saved split values on that transaction unless the user changes the agent selection.
+
+## Install on MacBook and phone
+
+This build includes PWA install files:
+- `manifest.webmanifest`
+- `sw.js`
+- app icons in `frontend/icons/`
+
+After deploying to Netlify, open the Netlify link on each device.
+
+### MacBook
+Chrome or Edge:
+1. Open the web app.
+2. Click the install icon in the address bar, or use the browser menu.
+3. Choose Install.
+4. The app will open like a normal Mac app.
+
+Safari:
+1. Open the web app.
+2. Use File > Add to Dock.
+3. The app will appear in the Dock and Launchpad.
+
+### iPhone
+1. Open the web app in Safari.
+2. Tap Share.
+3. Tap Add to Home Screen.
+4. Tap Add.
+
+### Android
+1. Open the web app in Chrome.
+2. Tap the three-dot menu.
+3. Tap Install app or Add to Home screen.
+4. Tap Install.
+
+The app still needs internet access for Google Sheet read/write.
