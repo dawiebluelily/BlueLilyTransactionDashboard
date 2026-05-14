@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Blue Lily Pretoria East | OTP Tracker</title>
+  <meta name="theme-color" content="#07111f" />
+  <style>
+    :root{
+      --bg:#07111f;--panel:#101d31;--panel2:#13243b;--line:#263a57;--text:#f5f8ff;--muted:#a9b8ce;
+      --blue:#4aa3ff;--blue2:#1f6feb;--cyan:#7dd3fc;--good:#2dd4bf;--warn:#fbbf24;--bad:#fb7185;
+      --shadow:0 18px 60px rgba(0,0,0,.35);--radius:22px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:radial-gradient(circle at top left,#12345b 0,#07111f 34%,#040913 100%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+    body{padding:18px}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    .app{max-width:1520px;margin:0 auto}
+    .topbar{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:16px 18px;border:1px solid rgba(125,211,252,.18);background:rgba(7,17,31,.78);backdrop-filter:blur(16px);border-radius:28px;box-shadow:var(--shadow);position:sticky;top:12px;z-index:20}
+    .brand{display:flex;align-items:center;gap:14px;min-width:260px}
+    .logo{width:78px;height:78px;border-radius:20px;background:#ffffff;display:grid;place-items:center;border:1px solid rgba(255,255,255,.14);box-shadow:0 12px 26px rgba(31,111,235,.22);flex:0 0 auto;padding:8px;overflow:hidden}
+    .logo img{width:100%;height:100%;object-fit:contain;display:block}
+    .brand h1{font-size:18px;line-height:1.08;margin:0;letter-spacing:.02em}
+    .brand .sub{font-size:12px;color:var(--muted);margin-top:4px}
+    .top-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+    .pill{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(16,29,49,.78);color:var(--muted);font-size:13px}
+    .pill strong{color:var(--text)}
+    .grid{display:grid;grid-template-columns:475px 1fr;gap:18px;margin-top:18px}
+    @media(max-width:1120px){.grid{grid-template-columns:1fr}.topbar{position:relative;top:0}.brand h1{font-size:16px}}
+    .card{background:rgba(16,29,49,.82);border:1px solid rgba(125,211,252,.16);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    .card-header{padding:16px 16px 12px;border-bottom:1px solid rgba(125,211,252,.12);display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .card-header h2{font-size:15px;margin:0;letter-spacing:.02em;text-transform:uppercase;color:#dbeafe}
+    .card-body{padding:16px}
+    .settings{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:end}
+    @media(max-width:720px){.settings{grid-template-columns:1fr}.top-actions{justify-content:flex-start}.topbar{align-items:flex-start;flex-direction:column}}
+    label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px 2px}
+    input,select,textarea{width:100%;border:1px solid var(--line);background:#0b1627;color:var(--text);border-radius:14px;padding:11px 12px;outline:none;transition:.15s border,.15s box-shadow}
+    input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(74,163,255,.18)}
+    textarea{resize:vertical;min-height:78px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    .row4{display:grid;grid-template-columns:1.4fr .75fr .75fr .9fr;gap:10px;align-items:end}
+    @media(max-width:850px){.row,.row3,.row4{grid-template-columns:1fr}}
+    .section-title{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--cyan);margin:20px 0 10px}
+    .btn{border:1px solid rgba(125,211,252,.22);background:linear-gradient(145deg,#1a3560,#153054);color:#fff;border-radius:14px;padding:11px 14px;font-weight:700;box-shadow:0 10px 24px rgba(0,0,0,.18);white-space:nowrap}
+    .btn:hover{filter:brightness(1.08)}
+    .btn.secondary{background:#0b1627;color:#dbeafe}
+    .btn.good{background:linear-gradient(145deg,#0f766e,#115e59)}
+    .btn.warn{background:linear-gradient(145deg,#b45309,#92400e)}
+    .button-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .calc-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+    @media(max-width:720px){.calc-strip{grid-template-columns:1fr 1fr}}
+    @media(max-width:480px){.calc-strip{grid-template-columns:1fr}}
+    .metric{padding:12px;border:1px solid rgba(125,211,252,.14);border-radius:16px;background:rgba(7,17,31,.62)}
+    .metric .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .metric .v{font-size:18px;font-weight:800;margin-top:5px}
+    .metric .v.good{color:var(--good)}.metric .v.warn{color:var(--warn)}.metric .v.bad{color:var(--bad)}
+    .dashboard{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+    @media(max-width:1020px){.dashboard{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:520px){.dashboard{grid-template-columns:1fr}}
+    .stat{padding:15px;border-radius:18px;background:linear-gradient(145deg,rgba(19,36,59,.92),rgba(7,17,31,.92));border:1px solid rgba(125,211,252,.14)}
+    .stat span{font-size:12px;color:var(--muted);display:block}
+    .stat strong{font-size:22px;margin-top:4px;display:block}
+    .tools{display:grid;grid-template-columns:1fr 220px auto;gap:10px;margin:14px 0}
+    @media(max-width:860px){.tools{grid-template-columns:1fr}}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:11px 9px;border-bottom:1px solid rgba(125,211,252,.10);font-size:13px;vertical-align:top}
+    th{text-align:left;color:#bfdbfe;font-size:11px;text-transform:uppercase;letter-spacing:.07em;background:rgba(7,17,31,.34);position:sticky;top:0}
+    .table-wrap{max-height:640px;overflow:auto;border:1px solid rgba(125,211,252,.12);border-radius:18px;background:rgba(7,17,31,.35)}
+    .status-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:#0b1627;color:#dbeafe;font-size:12px;white-space:nowrap}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--blue)}.status-badge.good .dot{background:var(--good)}.status-badge.warn .dot{background:var(--warn)}.status-badge.bad .dot{background:var(--bad)}
+    .mini{font-size:12px;color:var(--muted)}.clickable{cursor:pointer}.clickable:hover{background:rgba(74,163,255,.08)}
+    .toast{position:fixed;right:18px;bottom:18px;z-index:50;max-width:440px;padding:14px 16px;border-radius:18px;background:#0b1627;border:1px solid rgba(125,211,252,.24);box-shadow:var(--shadow);display:none}
+    .toast.show{display:block}.toast strong{display:block;margin-bottom:4px}
+    .progress{display:flex;gap:4px;margin-top:8px}.progress i{height:7px;flex:1;border-radius:99px;background:#263a57}.progress i.on{background:linear-gradient(90deg,var(--blue2),var(--cyan))}
+    .hint{font-size:12px;color:var(--muted);line-height:1.45}
+    .checkbox-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}
+    .checkline{display:flex;align-items:center;gap:8px;font-size:13px;color:#dbeafe}.checkline input{width:auto}
+    .small-note{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4}
+    .refbox{display:flex;gap:8px}.refbox input{font-weight:800;color:#bfdbfe;letter-spacing:.03em}
+    .agent-card{border:1px solid rgba(125,211,252,.14);background:rgba(7,17,31,.38);border-radius:18px;padding:12px;margin-bottom:12px}
+    .agent-card h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:#dbeafe;margin:0 0 10px}
+    .agent-result{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+    @media(max-width:560px){body{padding:10px}.card-body{padding:12px}.card-header{padding:13px}.refbox,.agent-result{grid-template-columns:1fr;display:grid}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">
+          <img src="./logo.jpg" alt="Blue Lily Properties logo" />
+        </div>
+        <div>
+          <h1>Blue Lily Pretoria East<br>OTP Transaction Tracker</h1>
+          <div class="sub">Agent split, office split and conveyancing pipeline control</div>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span class="pill">Connection: <strong id="connectionState">Not connected</strong></span>
+        <span class="pill">Agents: <strong id="agentCount">0</strong></span>
+        <span class="pill">Records: <strong id="recordCount">0</strong></span>
+        <button class="btn secondary" id="newBtn" type="button">New Transaction</button>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="left">
+        <div class="card">
+          <div class="card-header"><h2>Google Sheet Connection</h2></div>
+          <div class="card-body">
+            <div class="settings">
+              <div>
+                <label for="scriptUrl">Apps Script Web App URL</label>
+                <input id="scriptUrl" placeholder="Paste your /exec URL here" />
+              </div>
+              <button class="btn secondary" id="saveUrlBtn" type="button">Save URL</button>
+              <button class="btn" id="setupBtn" type="button">Setup Sheet</button>
+            </div>
+            <p class="hint">This version reads agents from your agent sheet and writes transactions to the OTP tracker sheet.</p>
+          </div>
+        </div>
+
+        <form id="otpForm" class="card" style="margin-top:18px">
+          <div class="card-header">
+            <h2>Transaction Capture</h2>
+            <button class="btn secondary" id="generateRefBtn" type="button">Get Ref</button>
+          </div>
+          <div class="card-body">
+            <div class="section-title">Reference and Status</div>
+            <div class="refbox">
+              <input id="referenceNumber" name="referenceNumber" placeholder="BLPE-OTP-2026-0001" />
+              <button class="btn secondary" id="copyRefBtn" type="button">Copy</button>
+            </div>
+            <div class="row" style="margin-top:12px">
+              <div>
+                <label for="status">Status</label>
+                <select id="status" name="status"></select>
+                <div class="progress" id="progressBar" aria-hidden="true"></div>
+              </div>
+              <div>
+                <label for="createdBy">Captured By</label>
+                <input id="createdBy" name="createdBy" placeholder="Dawie / admin / agent" />
+              </div>
+            </div>
+
+            <div class="section-title">Property and Parties</div>
+            <div><label for="propertyAddress">Property Address</label><input id="propertyAddress" name="propertyAddress" required placeholder="Street number, street name, complex, suburb" /></div>
+            <div class="row" style="margin-top:12px">
+              <div><label for="suburb">Suburb</label><input id="suburb" name="suburb" placeholder="Pretoria East suburb" /></div>
+              <div><label for="otpDate">OTP Date</label><input id="otpDate" name="otpDate" type="date" /></div>
+            </div>
+            <div class="row" style="margin-top:12px">
+              <div><label for="sellerName">Seller</label><input id="sellerName" name="sellerName" placeholder="Seller name" /></div>
+              <div><label for="sellerContact">Seller Contact</label><input id="sellerContact" name="sellerContact" placeholder="+27..." /></div>
+            </div>
+            <div class="row" style="margin-top:12px">
+              <div><label for="purchaserName">Purchaser</label><input id="purchaserName" name="purchaserName" placeholder="Purchaser name" /></div>
+              <div><label for="purchaserContact">Purchaser Contact</label><input id="purchaserContact" name="purchaserContact" placeholder="+27..." /></div>
+            </div>
+
+            <div class="section-title">Sale and Commission</div>
+            <div class="row">
+              <div><label for="salesPrice">Sales Price</label><input id="salesPrice" name="salesPrice" inputmode="decimal" placeholder="R 0" /></div>
+              <div><label for="commissionAmount">Total Commission</label><input id="commissionAmount" name="commissionAmount" inputmode="decimal" placeholder="R 0" /></div>
+            </div>
+            <div class="row" style="margin-top:12px">
+              <div><label for="commissionPercentage">Commission %</label><input id="commissionPercentage" name="commissionPercentage" inputmode="decimal" placeholder="Auto if sale and commission entered" /></div>
+              <div><label for="bondAmount">Bond Amount / Cash Portion</label><input id="bondAmount" name="bondAmount" inputmode="decimal" placeholder="Optional" /></div>
+            </div>
+
+            <div class="section-title">Transaction Commission Split</div>
+            <p class="hint">Deal Share % splits the total transaction commission between Agent 1, Agent 2 and Agent 3. Agent Split % and Office Split % are pulled from the agent sheet, but can still be edited on the transaction.</p>
+            <div id="agentCards"></div>
+
+            <div class="calc-strip">
+              <div class="metric"><div class="k">Agent Gross</div><div class="v" id="totalAgentGrossView">R 0</div></div>
+              <div class="metric"><div class="k">Agent Net Income</div><div class="v" id="totalAgentIncomeView">R 0</div></div>
+              <div class="metric"><div class="k">Office Income</div><div class="v good" id="officeIncomeView">R 0</div></div>
+              <div class="metric"><div class="k">Company Income</div><div class="v good" id="companyIncomeView">R 0</div></div>
+            </div>
+            <div class="small-note" id="splitWarning"></div>
+
+            <div class="section-title">Conveyancing and COC</div>
+            <div class="row">
+              <div><label for="conveyancer">Conveyancer / Attorney</label><input id="conveyancer" name="conveyancer" placeholder="Firm / contact person" /></div>
+              <div><label for="conveyancerContact">Conveyancer Contact</label><input id="conveyancerContact" name="conveyancerContact" placeholder="Email / phone" /></div>
+            </div>
+            <div class="row" style="margin-top:12px">
+              <div><label for="bondBank">Bond Bank / Finance</label><input id="bondBank" name="bondBank" placeholder="Bank / cash / originator" /></div>
+              <div><label for="expectedRegistrationDate">Expected Registration Date</label><input id="expectedRegistrationDate" name="expectedRegistrationDate" type="date" /></div>
+            </div>
+            <div style="margin-top:12px">
+              <label for="cocNeeded">COC Needed</label>
+              <select id="cocNeeded" name="cocNeeded">
+                <option value="">Select</option><option>Yes</option><option>No</option><option>Partially Complete</option>
+              </select>
+            </div>
+            <div class="checkbox-grid" style="margin-top:12px">
+              <label class="checkline"><input type="checkbox" id="cocElectrical" name="cocElectrical" /> Electrical</label>
+              <label class="checkline"><input type="checkbox" id="cocGas" name="cocGas" /> Gas</label>
+              <label class="checkline"><input type="checkbox" id="cocElectricFence" name="cocElectricFence" /> Electric Fence</label>
+              <label class="checkline"><input type="checkbox" id="cocBeetle" name="cocBeetle" /> Beetle / Wood Borer</label>
+              <label class="checkline"><input type="checkbox" id="cocPlumbing" name="cocPlumbing" /> Plumbing</label>
+              <label class="checkline"><input type="checkbox" id="cocSolar" name="cocSolar" /> Solar</label>
+            </div>
+
+            <div class="section-title">Next Action and Notes</div>
+            <div class="row">
+              <div><label for="nextAction">Next Action</label><input id="nextAction" name="nextAction" placeholder="Example: Follow up bond approval" /></div>
+              <div><label for="nextActionDate">Next Action Date</label><input id="nextActionDate" name="nextActionDate" type="date" /></div>
+            </div>
+            <div style="margin-top:12px"><label for="notes">Notes</label><textarea id="notes" name="notes" placeholder="Internal notes, outstanding items, risk flags"></textarea></div>
+
+            <div class="button-row">
+              <button class="btn good" type="submit">Save Transaction</button>
+              <button class="btn secondary" id="clearBtn" type="button">Clear Form</button>
+              <button class="btn warn" id="exportCsvBtn" type="button">Export CSV</button>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <section class="right">
+        <div class="card">
+          <div class="card-header"><h2>Pipeline Dashboard</h2><button class="btn" id="refreshBtn" type="button">Refresh</button></div>
+          <div class="card-body">
+            <div class="dashboard">
+              <div class="stat"><span>Total Pipeline</span><strong id="statTransactions">0</strong></div>
+              <div class="stat"><span>Total Sales Value</span><strong id="statSales">R 0</strong></div>
+              <div class="stat"><span>Total Commission</span><strong id="statCommission">R 0</strong></div>
+              <div class="stat"><span>Agent Net</span><strong id="statAgentNet">R 0</strong></div>
+              <div class="stat"><span>Company Income</span><strong id="statCompany">R 0</strong></div>
+            </div>
+            <div class="tools">
+              <input id="searchBox" placeholder="Search ref, address, suburb, seller, purchaser, agent..." />
+              <select id="statusFilter"></select>
+              <button class="btn secondary" id="clearFiltersBtn" type="button">Clear Filters</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Ref</th><th>Status</th><th>Property</th><th>Sale / Commission</th><th>Agents</th><th>Company</th><th>Next Action</th>
+                  </tr>
+                </thead>
+                <tbody id="recordsBody"><tr><td colspan="7" class="mini">No records loaded yet.</td></tr></tbody>
+              </table>
+            </div>
+            <p class="hint">Click any row to edit the transaction. Changes save back to the same reference number in Google Sheets.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbztJ2dYbu6WbGXTkMR_2eWG6pF08DfaMarxCbc6lciPJp94cCuR5l822IpFjnhkXJgM/exec";
+    const STORAGE_URL = "blpe_otp_script_url";
+    const STORAGE_CACHE = "blpe_otp_cache";
+    let records = [];
+    let agents = [];
+
+    const STATUSES = [
+      "Offer Accepted","Submitted to Attorneys","FICA and Supporting Docs Outstanding","Seller Docs Signed","Purchaser Docs Signed",
+      "Bond Application Submitted","Bond Approved","Cash Paid / Guarantees Requested","Guarantees Issued","COC Needed","COC Booked","COC Received",
+      "Rates Clearance Requested","Rates Clearance Received","Levy Clearance Requested","Levy Clearance Received","Transfer Duty Requested",
+      "Transfer Duty Receipt Received","Prep","Lodged","Registered","Paid Out","Cancelled"
+    ];
+
+    const $ = id => document.getElementById(id);
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+    }
+
+    function toast(title, message="") {
+      const el = $("toast");
+      el.innerHTML = `<strong>${escapeHtml(title)}</strong><div>${escapeHtml(message)}</div>`;
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 4300);
+    }
+
+    function parseMoney(value) {
+      if (typeof value === "number") return value;
+      if (!value) return 0;
+      const cleaned = String(value).replace(/R/gi,"").replace(/\s/g,"").replace(/,/g,".");
+      const normalized = cleaned.replace(/[^\d.-]/g,"");
+      const num = Number(normalized);
+      return Number.isFinite(num) ? num : 0;
+    }
+
+    function parsePct(value) {
+      const num = Number(String(value || "").replace(",", ".").replace(/[^\d.-]/g, ""));
+      return Number.isFinite(num) ? num : 0;
+    }
+
+    function money(num) {
+      return new Intl.NumberFormat("en-ZA", { style:"currency", currency:"ZAR", maximumFractionDigits:0 }).format(Number(num) || 0);
+    }
+
+    function todayIso() {
+      return new Date().toISOString().slice(0,10);
+    }
+
+    function buildReferenceFallback() {
+      const d = new Date();
+      const pad = n => String(n).padStart(2,"0");
+      return `BLPE-OTP-${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+    }
+
+    function getScriptUrl() {
+      return ($("scriptUrl").value || localStorage.getItem(STORAGE_URL) || DEFAULT_SCRIPT_URL || "").trim();
+    }
+
+    function initStatusControls() {
+      $("status").innerHTML = STATUSES.map(s => `<option>${s}</option>`).join("");
+      $("statusFilter").innerHTML = `<option value="">All Statuses</option>` + STATUSES.map(s => `<option>${s}</option>`).join("");
+      $("progressBar").innerHTML = STATUSES.filter(s => s !== "Cancelled").map(() => "<i></i>").join("");
+      updateProgressBar();
+    }
+
+    function updateProgressBar() {
+      const value = $("status").value;
+      const steps = [...$("progressBar").querySelectorAll("i")];
+      const idx = Math.max(0, STATUSES.filter(s => s !== "Cancelled").indexOf(value));
+      steps.forEach((step, i) => step.classList.toggle("on", value !== "Cancelled" && i <= idx));
+    }
+
+    function buildAgentCards() {
+      const wrap = $("agentCards");
+      wrap.innerHTML = [1,2,3].map(i => `
+        <div class="agent-card">
+          <h3>Agent ${i}</h3>
+          <div class="row4">
+            <div>
+              <label for="agent${i}Name">Agent Name</label>
+              <select id="agent${i}Name" name="agent${i}Name"><option value="">Select Agent</option></select>
+            </div>
+            <div>
+              <label for="agent${i}DealSharePct">Deal Share %</label>
+              <input id="agent${i}DealSharePct" name="agent${i}DealSharePct" inputmode="decimal" placeholder="${i === 1 ? '100' : '0'}" />
+            </div>
+            <div>
+              <label for="agent${i}AgentSplitPct">Agent Split %</label>
+              <input id="agent${i}AgentSplitPct" name="agent${i}AgentSplitPct" inputmode="decimal" placeholder="Auto" />
+            </div>
+            <div>
+              <label for="agent${i}OfficeSplitPct">Office Split %</label>
+              <input id="agent${i}OfficeSplitPct" name="agent${i}OfficeSplitPct" inputmode="decimal" placeholder="Auto" />
+            </div>
+          </div>
+          <input type="hidden" id="agent${i}Email" name="agent${i}Email" />
+          <input type="hidden" id="agent${i}Number" name="agent${i}Number" />
+          <input type="hidden" id="agent${i}Ffc" name="agent${i}Ffc" />
+          <div class="agent-result">
+            <div class="metric"><div class="k">Gross Share</div><div class="v" id="agent${i}GrossView">R 0</div></div>
+            <div class="metric"><div class="k">Agent Net</div><div class="v" id="agent${i}NetView">R 0</div></div>
+            <div class="metric"><div class="k">Office Income</div><div class="v good" id="agent${i}OfficeView">R 0</div></div>
+          </div>
+          <div class="small-note" id="agent${i}DetailsView"></div>
+        </div>
+      `).join("");
+
+      [1,2,3].forEach(i => {
+        $(`agent${i}Name`).addEventListener("change", () => applyAgentToSlot(i));
+        [`agent${i}DealSharePct`,`agent${i}AgentSplitPct`,`agent${i}OfficeSplitPct`].forEach(id => $(id).addEventListener("input", updateCalculations));
+      });
+      populateAgentDropdowns();
+    }
+
+    function populateAgentDropdowns() {
+      [1,2,3].forEach(i => {
+        const select = $(`agent${i}Name`);
+        if (!select) return;
+        const current = select.value;
+        select.innerHTML = `<option value="">Select Agent</option>` + agents.map(a => `<option value="${escapeHtml(a.name)}">${escapeHtml(a.name)}</option>`).join("");
+        select.value = current;
+      });
+      $("agentCount").textContent = String(agents.length);
+    }
+
+    function findAgent(name) {
+      const key = String(name || "").trim().toLowerCase();
+      return agents.find(a => String(a.name || "").trim().toLowerCase() === key);
+    }
+
+    function applyAgentToSlot(i) {
+      const agent = findAgent($(`agent${i}Name`).value);
+      if (!agent) {
+        $(`agent${i}DetailsView`).textContent = "";
+        updateCalculations();
+        return;
+      }
+      $(`agent${i}Email`).value = agent.email || "";
+      $(`agent${i}Number`).value = agent.number || "";
+      $(`agent${i}Ffc`).value = agent.ffc || "";
+      if (!$(`agent${i}AgentSplitPct`).value) $(`agent${i}AgentSplitPct`).value = agent.agentSplitPct || "";
+      if (!$(`agent${i}OfficeSplitPct`).value) $(`agent${i}OfficeSplitPct`).value = agent.officeSplitPct || "";
+      $(`agent${i}DetailsView`).textContent = [
+        agent.email ? `Email: ${agent.email}` : "",
+        agent.number ? `Number: ${agent.number}` : "",
+        agent.ffc ? `FFC: ${agent.ffc}` : ""
+      ].filter(Boolean).join(" | ");
+      updateCalculations();
+    }
+
+    function jsonp(action, params = {}) {
+      const url = getScriptUrl();
+      if (!url) return Promise.reject(new Error("Apps Script URL missing."));
+      return new Promise((resolve, reject) => {
+        const callback = "blpe_cb_" + Date.now() + "_" + Math.floor(Math.random()*100000);
+        const query = new URLSearchParams({ action, callback, ...params });
+        const script = document.createElement("script");
+        const timer = setTimeout(() => { cleanup(); reject(new Error("Request timed out.")); }, 22000);
+        function cleanup() { clearTimeout(timer); delete window[callback]; script.remove(); }
+        window[callback] = data => { cleanup(); resolve(data); };
+        script.onerror = () => { cleanup(); reject(new Error("Could not connect to Apps Script.")); };
+        script.src = `${url}${url.includes("?") ? "&" : "?"}${query.toString()}`;
+        document.body.appendChild(script);
+      });
+    }
+
+    async function postApi(action, payload) {
+      const url = getScriptUrl();
+      if (!url) throw new Error("Apps Script URL missing.");
+      const body = new URLSearchParams({ action, ...payload });
+      try {
+        const res = await fetch(url, { method:"POST", body });
+        const text = await res.text();
+        try { return JSON.parse(text); }
+        catch(e) {
+          const match = text.match(/\{[\s\S]*\}/);
+          if (match) return JSON.parse(match[0]);
+          throw new Error("Save completed but the response could not be read.");
+        }
+      } catch (err) {
+        await fetch(url, { method:"POST", body, mode:"no-cors" });
+        return { success:true, opaque:true, message:"Write request sent using fallback mode." };
+      }
+    }
+
+    async function loadAgents() {
+      try {
+        const result = await jsonp("listAgents");
+        if (!result.success) throw new Error(result.error || "Could not load agents.");
+        agents = Array.isArray(result.agents) ? result.agents : [];
+        populateAgentDropdowns();
+      } catch (err) {
+        toast("Agent list not loaded", err.message);
+      }
+    }
+
+    async function setupSheet() {
+      try {
+        const result = await jsonp("setup");
+        if (!result.success) throw new Error(result.error || "Setup failed.");
+        $("connectionState").textContent = "Connected";
+        toast("Sheet setup complete", "Headers, settings and agent split columns were checked.");
+        await loadAgents();
+        await loadRecords();
+      } catch (err) {
+        toast("Setup failed", err.message);
+      }
+    }
+
+    async function getNextReference() {
+      try {
+        const result = await jsonp("nextRef");
+        if (result.success && result.referenceNumber) {
+          $("referenceNumber").value = result.referenceNumber;
+          toast("Reference created", result.referenceNumber);
+          return;
+        }
+        throw new Error(result.error || "Could not generate reference.");
+      } catch (err) {
+        const fallback = buildReferenceFallback();
+        $("referenceNumber").value = fallback;
+        toast("Offline reference created", fallback);
+      }
+    }
+
+    function calculateSplits(source = null) {
+      const sales = source ? parseMoney(source.salesPrice) : parseMoney($("salesPrice").value);
+      let commission = source ? parseMoney(source.commissionAmount) : parseMoney($("commissionAmount").value);
+      let commissionPct = source ? parsePct(source.commissionPercentage) : parsePct($("commissionPercentage").value);
+      if (!commission && sales && commissionPct) commission = sales * commissionPct / 100;
+      if (!commissionPct && sales && commission) commissionPct = commission / sales * 100;
+
+      let totalDealShare = 0, totalAgentGross = 0, totalAgentIncome = 0, totalOfficeIncome = 0;
+      const slots = [1,2,3].map(i => {
+        const dealSharePct = source ? parsePct(source[`agent${i}DealSharePct`]) : parsePct($(`agent${i}DealSharePct`).value);
+        let agentSplitPct = source ? parsePct(source[`agent${i}AgentSplitPct`]) : parsePct($(`agent${i}AgentSplitPct`).value);
+        let officeSplitPct = source ? parsePct(source[`agent${i}OfficeSplitPct`]) : parsePct($(`agent${i}OfficeSplitPct`).value);
+        if (!agentSplitPct && officeSplitPct) agentSplitPct = 100 - officeSplitPct;
+        if (!officeSplitPct && agentSplitPct) officeSplitPct = 100 - agentSplitPct;
+        const gross = commission * dealSharePct / 100;
+        const agentIncome = gross * agentSplitPct / 100;
+        const officeIncome = gross - agentIncome;
+        totalDealShare += dealSharePct;
+        totalAgentGross += gross;
+        totalAgentIncome += agentIncome;
+        totalOfficeIncome += officeIncome;
+        return { dealSharePct, agentSplitPct, officeSplitPct, gross, agentIncome, officeIncome };
+      });
+      const unallocatedCommission = commission - totalAgentGross;
+      const companyIncome = commission - totalAgentIncome;
+      const companyIncomePct = commission ? companyIncome / commission * 100 : 0;
+      return { salesPrice:sales, commissionAmount:commission, commissionPercentage:commissionPct, slots, totalDealShare, totalAgentGross, totalAgentIncome, totalOfficeIncome, unallocatedCommission, companyIncome, companyIncomePct };
+    }
+
+    function updateCalculations() {
+      const calc = calculateSplits();
+      calc.slots.forEach((slot, idx) => {
+        const i = idx + 1;
+        $(`agent${i}GrossView`).textContent = money(slot.gross);
+        $(`agent${i}NetView`).textContent = money(slot.agentIncome);
+        $(`agent${i}OfficeView`).textContent = money(slot.officeIncome);
+      });
+      $("totalAgentGrossView").textContent = money(calc.totalAgentGross);
+      $("totalAgentIncomeView").textContent = money(calc.totalAgentIncome);
+      $("officeIncomeView").textContent = money(calc.totalOfficeIncome);
+      $("companyIncomeView").textContent = money(calc.companyIncome);
+      $("companyIncomeView").className = "v " + (calc.companyIncome < 0 ? "bad" : "good");
+
+      const msg = [
+        `Deal share total: ${calc.totalDealShare.toFixed(2)}%.`,
+        `Unallocated commission: ${money(calc.unallocatedCommission)}.`,
+        `Company income includes office split plus any unallocated commission.`
+      ].join(" ");
+      $("splitWarning").textContent = msg;
+      $("splitWarning").style.color = calc.totalDealShare > 100 ? "var(--bad)" : "var(--muted)";
+    }
+
+    function collectForm() {
+      const fd = new FormData($("otpForm"));
+      const data = {};
+      fd.forEach((value, key) => data[key] = value);
+
+      ["cocElectrical","cocGas","cocElectricFence","cocBeetle","cocPlumbing","cocSolar"].forEach(id => data[id] = $(id).checked ? "Yes" : "");
+      data.salesPrice = parseMoney(data.salesPrice);
+      data.commissionAmount = parseMoney(data.commissionAmount);
+      data.commissionPercentage = parsePct(data.commissionPercentage);
+      data.bondAmount = parseMoney(data.bondAmount);
+
+      [1,2,3].forEach(i => {
+        data[`agent${i}DealSharePct`] = parsePct(data[`agent${i}DealSharePct`]);
+        data[`agent${i}AgentSplitPct`] = parsePct(data[`agent${i}AgentSplitPct`]);
+        data[`agent${i}OfficeSplitPct`] = parsePct(data[`agent${i}OfficeSplitPct`]);
+      });
+      Object.assign(data, calculateSplits(data));
+      data.lastEditedBy = data.createdBy || "";
+      return data;
+    }
+
+    function toSheetRecord(data) {
+      const rec = {
+        "Timestamp": new Date().toISOString(),"Updated At": new Date().toISOString(),"Reference Number": data.referenceNumber,"Status": data.status,
+        "Property Address": data.propertyAddress,"Suburb": data.suburb,"Seller Name": data.sellerName,"Seller Contact": data.sellerContact,
+        "Purchaser Name": data.purchaserName,"Purchaser Contact": data.purchaserContact,"Sales Price": data.salesPrice,"Commission Amount": data.commissionAmount,
+        "Commission Percentage": data.commissionPercentage,"Total Deal Share %": data.totalDealShare,"Total Agent Gross Commission": data.totalAgentGross,
+        "Total Agent Income": data.totalAgentIncome,"Total Office Income": data.totalOfficeIncome,"Unallocated Commission": data.unallocatedCommission,
+        "Company Income": data.companyIncome,"Company Income %": data.companyIncomePct,"COC Needed": data.cocNeeded,
+        "COC Electrical": data.cocElectrical,"COC Gas": data.cocGas,"COC Electric Fence": data.cocElectricFence,"COC Beetle/Wood Borer": data.cocBeetle,
+        "COC Plumbing": data.cocPlumbing,"COC Solar": data.cocSolar,"Conveyancer": data.conveyancer,"Conveyancer Contact": data.conveyancerContact,
+        "Bond Bank": data.bondBank,"Bond Amount": data.bondAmount,"OTP Date": data.otpDate,"Expected Registration Date": data.expectedRegistrationDate,
+        "Next Action": data.nextAction,"Next Action Date": data.nextActionDate,"Notes": data.notes,"Created By": data.createdBy,"Last Edited By": data.lastEditedBy,
+        "Branch":"Blue Lily Pretoria East"
+      };
+      [1,2,3].forEach(i => {
+        rec[`Agent ${i} Name`] = data[`agent${i}Name`];
+        rec[`Agent ${i} Email`] = data[`agent${i}Email`];
+        rec[`Agent ${i} Number`] = data[`agent${i}Number`];
+        rec[`Agent ${i} FFC`] = data[`agent${i}Ffc`];
+        rec[`Agent ${i} Deal Share %`] = data[`agent${i}DealSharePct`];
+        rec[`Agent ${i} Agent Split %`] = data[`agent${i}AgentSplitPct`];
+        rec[`Agent ${i} Office Split %`] = data[`agent${i}OfficeSplitPct`];
+        rec[`Agent ${i} Gross Commission`] = data.slots?.[i-1]?.gross || 0;
+        rec[`Agent ${i} Agent Income`] = data.slots?.[i-1]?.agentIncome || 0;
+        rec[`Agent ${i} Office Income`] = data.slots?.[i-1]?.officeIncome || 0;
+      });
+      return rec;
+    }
+
+    async function saveTransaction(evt) {
+      evt.preventDefault();
+      const data = collectForm();
+      if (!data.referenceNumber) data.referenceNumber = buildReferenceFallback();
+      $("referenceNumber").value = data.referenceNumber;
+
+      try {
+        const result = await postApi("save", data);
+        if (!result.success) throw new Error(result.error || "Save failed.");
+        const saved = result.record || toSheetRecord(data);
+        cacheUpsert(saved); saveCache();
+        toast(result.opaque ? "Transaction sent to sheet" : "Transaction saved", saved["Reference Number"] || data.referenceNumber);
+        await loadRecords();
+      } catch (err) {
+        cacheUpsert(toSheetRecord(data)); saveCache();
+        toast("Saved locally", "Could not confirm Google Sheet write-back. Check deployment permissions and URL.");
+        renderRecords();
+      }
+    }
+
+    async function loadRecords() {
+      try {
+        const result = await jsonp("list");
+        if (!result.success) throw new Error(result.error || "Could not load records.");
+        records = Array.isArray(result.records) ? result.records : [];
+        saveCache();
+        $("connectionState").textContent = "Connected";
+      } catch (err) {
+        records = loadCache();
+        $("connectionState").textContent = records.length ? "Local cache" : "Not connected";
+        if (!records.length) toast("Load failed", err.message);
+      }
+      renderRecords();
+    }
+
+    function saveCache() { localStorage.setItem(STORAGE_CACHE, JSON.stringify(records || [])); }
+    function loadCache() { try { return JSON.parse(localStorage.getItem(STORAGE_CACHE) || "[]"); } catch(e) { return []; } }
+    function cacheUpsert(record) {
+      const ref = record["Reference Number"];
+      const idx = records.findIndex(r => r["Reference Number"] === ref);
+      if (idx >= 0) records[idx] = record; else records.unshift(record);
+    }
+
+    function statusClass(status) {
+      if (["Registered","Paid Out"].includes(status)) return "good";
+      if (["Cancelled"].includes(status)) return "bad";
+      if (["COC Needed","FICA and Supporting Docs Outstanding","Rates Clearance Requested","Levy Clearance Requested"].includes(status)) return "warn";
+      return "";
+    }
+
+    function filteredRecords() {
+      const q = $("searchBox").value.trim().toLowerCase();
+      const s = $("statusFilter").value;
+      return records.filter(r => {
+        if (s && r["Status"] !== s) return false;
+        if (!q) return true;
+        const hay = [
+          r["Reference Number"], r["Status"], r["Property Address"], r["Suburb"], r["Seller Name"], r["Purchaser Name"],
+          r["Agent 1 Name"], r["Agent 2 Name"], r["Agent 3 Name"], r["Conveyancer"], r["Next Action"]
+        ].join(" ").toLowerCase();
+        return hay.includes(q);
+      });
+    }
+
+    function renderRecords() {
+      const list = filteredRecords();
+      $("recordCount").textContent = String(records.length);
+      $("statTransactions").textContent = String(list.length);
+      $("statSales").textContent = money(list.reduce((sum,r)=>sum+parseMoney(r["Sales Price"]),0));
+      $("statCommission").textContent = money(list.reduce((sum,r)=>sum+parseMoney(r["Commission Amount"]),0));
+      $("statAgentNet").textContent = money(list.reduce((sum,r)=>sum+parseMoney(r["Total Agent Income"]),0));
+      $("statCompany").textContent = money(list.reduce((sum,r)=>sum+parseMoney(r["Company Income"]),0));
+
+      if (!list.length) {
+        $("recordsBody").innerHTML = `<tr><td colspan="7" class="mini">No matching transactions.</td></tr>`;
+        return;
+      }
+
+      $("recordsBody").innerHTML = list.map(r => {
+        const agentsText = [1,2,3].map(i => {
+          const name = r[`Agent ${i} Name`];
+          if (!name) return "";
+          return `${escapeHtml(name)} <span class="mini">Deal ${escapeHtml(r[`Agent ${i} Deal Share %`] || 0)}% | Agent ${escapeHtml(r[`Agent ${i} Agent Split %`] || 0)}%</span>`;
+        }).filter(Boolean).join("<br>");
+        return `<tr class="clickable" data-ref="${escapeHtml(r["Reference Number"])}">
+          <td><strong>${escapeHtml(r["Reference Number"] || "")}</strong><div class="mini">${escapeHtml(r["Updated At"] || "")}</div></td>
+          <td><span class="status-badge ${statusClass(r["Status"])}"><span class="dot"></span>${escapeHtml(r["Status"] || "")}</span></td>
+          <td>${escapeHtml(r["Property Address"] || "")}<div class="mini">${escapeHtml(r["Suburb"] || "")}</div></td>
+          <td>${money(r["Sales Price"])}<div class="mini">Comm: ${money(r["Commission Amount"])}</div></td>
+          <td>${agentsText || '<span class="mini">No agents</span>'}</td>
+          <td><strong>${money(r["Company Income"])}</strong><div class="mini">Office: ${money(r["Total Office Income"])}</div></td>
+          <td>${escapeHtml(r["Next Action"] || "")}<div class="mini">${escapeHtml(r["Next Action Date"] || "")}</div></td>
+        </tr>`;
+      }).join("");
+
+      [...document.querySelectorAll("tr[data-ref]")].forEach(row => {
+        row.addEventListener("click", () => {
+          const rec = records.find(r => r["Reference Number"] === row.dataset.ref);
+          if (rec) fillForm(rec);
+        });
+      });
+    }
+
+    function fillForm(record) {
+      const map = {
+        referenceNumber:"Reference Number",status:"Status",propertyAddress:"Property Address",suburb:"Suburb",sellerName:"Seller Name",sellerContact:"Seller Contact",
+        purchaserName:"Purchaser Name",purchaserContact:"Purchaser Contact",salesPrice:"Sales Price",commissionAmount:"Commission Amount",commissionPercentage:"Commission Percentage",
+        conveyancer:"Conveyancer",conveyancerContact:"Conveyancer Contact",bondBank:"Bond Bank",bondAmount:"Bond Amount",otpDate:"OTP Date",
+        expectedRegistrationDate:"Expected Registration Date",cocNeeded:"COC Needed",nextAction:"Next Action",nextActionDate:"Next Action Date",notes:"Notes",createdBy:"Created By"
+      };
+      Object.entries(map).forEach(([id,col]) => { if ($(id)) $(id).value = record[col] || ""; });
+      [1,2,3].forEach(i => {
+        $(`agent${i}Name`).value = record[`Agent ${i} Name`] || "";
+        $(`agent${i}Email`).value = record[`Agent ${i} Email`] || "";
+        $(`agent${i}Number`).value = record[`Agent ${i} Number`] || "";
+        $(`agent${i}Ffc`).value = record[`Agent ${i} FFC`] || "";
+        $(`agent${i}DealSharePct`).value = record[`Agent ${i} Deal Share %`] || "";
+        $(`agent${i}AgentSplitPct`).value = record[`Agent ${i} Agent Split %`] || "";
+        $(`agent${i}OfficeSplitPct`).value = record[`Agent ${i} Office Split %`] || "";
+        applyAgentToSlot(i);
+      });
+      $("cocElectrical").checked = record["COC Electrical"] === "Yes";
+      $("cocGas").checked = record["COC Gas"] === "Yes";
+      $("cocElectricFence").checked = record["COC Electric Fence"] === "Yes";
+      $("cocBeetle").checked = record["COC Beetle/Wood Borer"] === "Yes";
+      $("cocPlumbing").checked = record["COC Plumbing"] === "Yes";
+      $("cocSolar").checked = record["COC Solar"] === "Yes";
+      updateProgressBar(); updateCalculations();
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+
+    function clearForm() {
+      $("otpForm").reset();
+      $("status").value = "Offer Accepted";
+      $("otpDate").value = todayIso();
+      $("referenceNumber").value = buildReferenceFallback();
+      [1,2,3].forEach(i => $("agent"+i+"DetailsView").textContent = "");
+      updateProgressBar(); updateCalculations();
+    }
+
+    function exportCsv() {
+      const list = filteredRecords();
+      if (!list.length) return toast("Nothing to export", "No matching records.");
+      const headers = Object.keys(list[0]);
+      const csv = [headers.join(","), ...list.map(row => headers.map(h => csvCell(row[h])).join(","))].join("\n");
+      const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = `blue-lily-pretoria-east-otp-tracker-${todayIso()}.csv`; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function csvCell(value) {
+      const text = String(value ?? "");
+      return /[",\n]/.test(text) ? `"${text.replace(/"/g,'""')}"` : text;
+    }
+
+    function bindEvents() {
+      $("scriptUrl").value = localStorage.getItem(STORAGE_URL) || DEFAULT_SCRIPT_URL || "";
+      $("saveUrlBtn").addEventListener("click", () => {
+        localStorage.setItem(STORAGE_URL, $("scriptUrl").value.trim());
+        toast("Script URL saved", "Connection URL stored in this browser.");
+        loadAgents(); loadRecords();
+      });
+      $("setupBtn").addEventListener("click", setupSheet);
+      $("generateRefBtn").addEventListener("click", getNextReference);
+      $("copyRefBtn").addEventListener("click", async () => {
+        const ref = $("referenceNumber").value;
+        if (!ref) return toast("No reference number", "Generate or type a reference first.");
+        await navigator.clipboard.writeText(ref);
+        toast("Copied", ref);
+      });
+      $("otpForm").addEventListener("submit", saveTransaction);
+      $("clearBtn").addEventListener("click", clearForm);
+      $("newBtn").addEventListener("click", clearForm);
+      $("refreshBtn").addEventListener("click", () => { loadAgents(); loadRecords(); });
+      $("exportCsvBtn").addEventListener("click", exportCsv);
+      $("clearFiltersBtn").addEventListener("click", () => { $("searchBox").value = ""; $("statusFilter").value = ""; renderRecords(); });
+      $("searchBox").addEventListener("input", renderRecords);
+      $("statusFilter").addEventListener("change", renderRecords);
+      $("status").addEventListener("change", updateProgressBar);
+      ["salesPrice","commissionAmount","commissionPercentage"].forEach(id => $(id).addEventListener("input", updateCalculations));
+    }
+
+    function boot() {
+      initStatusControls(); buildAgentCards(); bindEvents(); clearForm();
+      records = loadCache(); renderRecords();
+      if (getScriptUrl()) { loadAgents(); loadRecords(); }
+    }
+
+    boot();
+  </script>
+</body>
+</html>
