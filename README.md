@@ -137,3 +137,13 @@ This build now reads that combined split correctly:
 - `80/20` becomes Agent Split 80% and Office Split 20%.
 - `75/25` becomes Agent Split 75% and Office Split 25%.
 - `70/30` becomes Agent Split 70% and Office Split 30%.
+
+## Frontend agent split refresh update
+
+When Agent 1, Agent 2 or Agent 3 is changed on the frontend, the app now immediately refreshes:
+- Agent Split %
+- Office Split %
+- Agent email, number and FFC
+- Split with office display, such as 80/20, 75/25 or 70/30
+
+Opening an existing saved transaction keeps the saved split values on that transaction unless the user changes the agent selection.

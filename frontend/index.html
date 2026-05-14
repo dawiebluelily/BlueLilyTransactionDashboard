@@ -388,23 +388,40 @@
       return agents.find(a => String(a.name || "").trim().toLowerCase() === key);
     }
 
-    function applyAgentToSlot(i) {
+    function applyAgentToSlot(i, refreshSplits = true) {
       const agent = findAgent($(`agent${i}Name`).value);
+
       if (!agent) {
+        $(`agent${i}Email`).value = "";
+        $(`agent${i}Number`).value = "";
+        $(`agent${i}Ffc`).value = "";
+
+        if (refreshSplits) {
+          $(`agent${i}AgentSplitPct`).value = "";
+          $(`agent${i}OfficeSplitPct`).value = "";
+        }
+
         $(`agent${i}DetailsView`).textContent = "";
         updateCalculations();
         return;
       }
+
       $(`agent${i}Email`).value = agent.email || "";
       $(`agent${i}Number`).value = agent.number || "";
       $(`agent${i}Ffc`).value = agent.ffc || "";
-      if (!$(`agent${i}AgentSplitPct`).value) $(`agent${i}AgentSplitPct`).value = agent.agentSplitPct || "";
-      if (!$(`agent${i}OfficeSplitPct`).value) $(`agent${i}OfficeSplitPct`).value = agent.officeSplitPct || "";
+
+      if (refreshSplits) {
+        $(`agent${i}AgentSplitPct`).value = agent.agentSplitPct || "";
+        $(`agent${i}OfficeSplitPct`).value = agent.officeSplitPct || "";
+      }
+
       $(`agent${i}DetailsView`).textContent = [
         agent.email ? `Email: ${agent.email}` : "",
         agent.number ? `Number: ${agent.number}` : "",
-        agent.ffc ? `FFC: ${agent.ffc}` : ""
+        agent.ffc ? `FFC: ${agent.ffc}` : "",
+        agent.splitWithOffice ? `Split with office: ${agent.splitWithOffice}` : ""
       ].filter(Boolean).join(" | ");
+
       updateCalculations();
     }
 
@@ -704,7 +721,7 @@
         $(`agent${i}DealSharePct`).value = record[`Agent ${i} Deal Share %`] || "";
         $(`agent${i}AgentSplitPct`).value = record[`Agent ${i} Agent Split %`] || "";
         $(`agent${i}OfficeSplitPct`).value = record[`Agent ${i} Office Split %`] || "";
-        applyAgentToSlot(i);
+        applyAgentToSlot(i, false);
       });
       $("cocElectrical").checked = record["COC Electrical"] === "Yes";
       $("cocGas").checked = record["COC Gas"] === "Yes";
